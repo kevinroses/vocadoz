@@ -31,9 +31,9 @@ export const ImageContainerForNotFound = styled(ImageContainer)(
 )
 
 export const CustomTypographyGray = styled(Typography)(
-    ({ theme, nodefaultfont, textdecoration,fontWeight }) => ({
+    ({ theme, nodefaultfont, textdecoration,fontweight }) => ({
         color: theme.palette.neutral[400],
-        fontWeight:fontWeight?fontWeight: 'bold',
+        fontWeight:fontweight?fontweight: 'bold',
         fontSize: nodefaultfont !== 'true' && '1.75rem',
         textDecoration: textdecoration,
     })

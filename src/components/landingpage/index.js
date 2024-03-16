@@ -6,19 +6,21 @@ import FunFactSection from './FunFactSection'
 import BannerSection from './BannerSection'
 import LinkSection from './link-section/LinkSection'
 import DownloadSection from './DownloadSection'
-import ClaimListing from './ClaimListing'
 
 import DiscountBanner from './DiscountBanner'
-import { useGetLandingPageData } from '../../hooks/react-query/landing-page/useGetLandingPageData'
+import { useGetLandingPageData } from "@/hooks/react-query/landing-page/useGetLandingPageData"
 import { useDispatch, useSelector } from 'react-redux'
-import { setLandingPageData } from '../../redux/slices/storedData'
+import { setLandingPageData } from "@/redux/slices/storedData"
 import { NoSsr } from '@mui/material'
 import * as PropTypes from 'prop-types'
 import CookiesConsent from '../CookiesConsent'
-import useGetGuest from "../../hooks/react-query/profile/useGetGuest";
+
+import { setGlobalSettings } from "@/redux/slices/global";
+import MapWithSearchBox from "@/components/google-map/MapWithSearchBox";
 
 const LandingPage = (props) => {
     const { global } = props
+
     const [zoneid, setZoneid] = useState(null)
     const dispatch = useDispatch()
     const { landingPageData } = useSelector((state) => state.storedData)
@@ -30,9 +32,9 @@ const LandingPage = (props) => {
 
     let token = undefined
     if (typeof window != 'undefined') {
-    token = localStorage.getItem('token')
+        token = localStorage.getItem('token')
     }
-    const handleModalClose = () => {}
+    const handleModalClose = () => { }
 
     const onSuccessHandler = (res) => {
         dispatch(setLandingPageData(res))
@@ -40,23 +42,26 @@ const LandingPage = (props) => {
 
     const { data, refetch, isLoading } = useGetLandingPageData(onSuccessHandler)
     useEffect(() => {
-      refetch()
+        refetch()
     }, [])
-//   const { data: guestData, refetch: guestRefetch } = useGetGuest();
-//   useEffect(() => {
-//     if (!token) {
-//       guestRefetch();
-//     }
-//   }, []);
-//   useEffect(() => {
-//     if (typeof window !== 'undefined') {
-//         localStorage.setItem("guest_id", guestData?.guest_id);
-//     }
-//   }, [guestData])
-
+    //   const { data: guestData, refetch: guestRefetch } = useGetGuest();
+    //   useEffect(() => {
+    //     if (!token) {
+    //       guestRefetch();
+    //     }
+    //   }, []);
+    //   useEffect(() => {
+    //     if (typeof window !== 'undefined') {
+    //         localStorage.setItem("guest_id", guestData?.guest_id);
+    //     }
+    //   }, [guestData])
+    useEffect(() => {
+        dispatch(setGlobalSettings(global))
+    }, []);
     return (
         <NoSsr>
             <CssBaseline />
+
             <HeroSection
                 business_name={global?.business_name}
                 banner_section_title={landingPageData?.react_header_title}
@@ -70,7 +75,6 @@ const LandingPage = (props) => {
                 handleModalClose={handleModalClose}
                 isLoading={isLoading}
             />
-            <ClaimListing/>
             <FunFactSection
                 global={global}
                 react_feature={landingPageData?.react_services}
@@ -97,8 +101,7 @@ const LandingPage = (props) => {
                     landingPageData?.delivery_section
                 }
                 restaurant_registration_image_url={
-                    landingPageData?.base_urls
-                        ?.react_restaurant_section_image_url
+                    landingPageData?.base_urls?.react_restaurant_section_image_url
                 }
                 isLoading={isLoading}
                 deliveryman_registration_image_url={
@@ -107,19 +110,19 @@ const LandingPage = (props) => {
             />
             {landingPageData?.download_app_section
                 ?.react_download_apps_banner_image && (
-                <DiscountBanner
-                    global={global}
-                    discount_banner={
-                        landingPageData?.download_app_section
-                            ?.react_download_apps_banner_image
-                    }
-                    isLoading={isLoading}
-                    discount_banner_url={
-                        landingPageData?.base_urls
-                            ?.react_download_apps_banner_image_url
-                    }
-                />
-            )}
+                    <DiscountBanner
+                        global={global}
+                        discount_banner={
+                            landingPageData?.download_app_section
+                                ?.react_download_apps_banner_image
+                        }
+                        isLoading={isLoading}
+                        discount_banner_url={
+                            landingPageData?.base_urls
+                                ?.react_download_apps_banner_image_url
+                        }
+                    />
+                )}
 
             {(landingPageData?.download_app_section
                 ?.react_download_apps_play_store
@@ -127,17 +130,17 @@ const LandingPage = (props) => {
                 landingPageData?.download_app_section
                     ?.react_download_apps_app_store
                     ?.react_download_apps_link_status === '1') && (
-                <DownloadSection
-                    download_app_data={landingPageData?.download_app_section}
-                    isLoading={isLoading}
-                    global={global}
-                    landing_page_links={landingPageData?.landing_page_links}
-                    download_app_image_urls={
-                        landingPageData?.base_urls
-                            ?.react_download_apps_image_url
-                    }
-                />
-            )}
+                    <DownloadSection
+                        download_app_data={landingPageData?.download_app_section}
+                        isLoading={isLoading}
+                        global={global}
+                        landing_page_links={landingPageData?.landing_page_links}
+                        download_app_image_urls={
+                            landingPageData?.base_urls
+                                ?.react_download_apps_image_url
+                        }
+                    />
+                )}
 
             <CookiesConsent text={global?.cookies_text} />
         </NoSsr>

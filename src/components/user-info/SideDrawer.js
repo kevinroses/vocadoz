@@ -33,7 +33,11 @@ const SideDrawer = ({ page, setAttributeId }) => {
             }
         } else if (page === 'coupons') {
             setPageTitle("My Coupons")
-        } else {
+        }
+        else if(page === "order" || page === "order?flag=success" || page === "order?flag=cancel"){
+            setPageTitle("Order")
+        }
+        else {
             dispatch(setEditProfile(false))
             setPageTitle(page)
         }

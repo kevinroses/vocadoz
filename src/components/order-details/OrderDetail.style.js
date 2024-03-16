@@ -29,14 +29,14 @@ export const OrderStatusBox = styled(Box)(({ theme }) => ({
         textAlign: 'center',
     },
 }))
-export const IformationGrid = styled(Stack)(({ theme }) => ({
+export const IformationGrid = styled(Stack)(({ theme,bgColor }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     background:
         theme.palette.mode === 'dark'
-            ? alpha(theme.palette.primary.main, 0.05)
-            : alpha(theme.palette.primary.main, 0.1),
+            ? bgColor ?? alpha(theme.palette.primary.main, 0.05)
+            :bgColor ?? alpha(theme.palette.primary.main, 0.1),
     borderRadius: '10px',
     padding: '10px',
 }))
@@ -55,7 +55,7 @@ export const OfflineWrapper = styled(Stack)(({ theme }) => ({
 }))
 
 export const OrderSummaryGrid = styled(Grid)(() => ({
-    padding: '0px 20px 20px 20px',
+    padding: '0px 14px 20px 14px',
     //paddingTop: '25px',
 }))
 export const OrderSummary = styled(Typography)(() => ({
@@ -101,7 +101,7 @@ export const HeadingBox = styled(Box)(() => ({
 }))
 
 export const InfoTypography = styled(Typography)(({ theme }) => ({
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: 400,
     lineHeight: "28px",
     color: theme.palette.neutral[900],

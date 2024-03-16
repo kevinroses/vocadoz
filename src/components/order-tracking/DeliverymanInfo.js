@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
     CustomStackFullWidth,
     CustomTypographyBold,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { Stack, Typography } from '@mui/material'
 import CustomImageContainer from '../CustomImageContainer'
 import CustomRatings from '../custom-ratings/CustomRatings'
@@ -15,11 +15,11 @@ import ChatIcon from '@mui/icons-material/Chat'
 import { CustomTypography } from '../custom-tables/Tables.style'
 import { CustomTypographyGray } from '../error/Errors.style'
 import { useQuery } from 'react-query'
-import { GoogleApi } from '../../hooks/react-query/config/googleApi'
+import { GoogleApi } from "@/hooks/react-query/config/googleApi"
 import { onErrorResponse } from '../ErrorResponse'
 import routePNG from '../../../public/static/route.png'
 import directionPNG from '../../../public/static/delivery-truck.png'
-import { handleDistance } from '../../utils/customFunctions'
+import { handleDistance } from "@/utils/customFunctions"
 const DeliverymanInfo = ({ data }) => {
     const { t } = useTranslation()
     const { global } = useSelector((state) => state.globalSettings)
@@ -79,7 +79,7 @@ const DeliverymanInfo = ({ data }) => {
                     height="30px"
                     width="30px"
                 />
-                <CustomTypographyGray sx={{ fontSize: '18px' }} fontWeight="400">
+                <CustomTypographyGray sx={{ fontSize: '18px' }} fontweight="400">
                     {handleAway().toFixed(2)}km {t(`${away}`)}
                 </CustomTypographyGray>
             </CustomStackFullWidth>
@@ -111,7 +111,7 @@ const DeliverymanInfo = ({ data }) => {
                         )}
                     />
                     <Stack alignItems="flex-start">
-                        <Typography fontSize="16px" fontWeight="400">
+                        <Typography fontSize="16px" fontweight="400">
                             {data?.delivery_man?.f_name.concat(
                                 ' ',
                                 data?.delivery_man?.l_name
@@ -119,7 +119,7 @@ const DeliverymanInfo = ({ data }) => {
                         </Typography>
                         <CustomRatings
                             readOnly={true}
-                            ratingValue={data?.delivery_man?.rating_count}
+                            ratingValue={data?.delivery_man?.avg_rating}
                         />
                     </Stack>
                 </Stack>

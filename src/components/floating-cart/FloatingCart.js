@@ -9,15 +9,8 @@ import {
     styled,
     Typography,
 } from '@mui/material'
-import cart from '../../../public/static/bannerslider/cart.png'
 import delivery from '../../../public/static/bannerslider/delivery.png'
 import Drawer from '@mui/material/Drawer'
-import {
-    OrderFoodAmount,
-    OrderFoodName,
-    OrderFoodSubtitle,
-    OrderSummaryGrid,
-} from '../checkout-page/CheckOut.style'
 import { useRouter } from 'next/router'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,27 +21,28 @@ import {
     getAmount, getConvertDiscount,
     getSelectedAddOn,
     getVariation,
-    handleBadge, handleIncrementedTotal
-} from "../../utils/customFunctions";
+    handleBadge, handleIncrementedTotal, handleProductValueWithOutDiscount
+} from "@/utils/customFunctions";
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
-import {
+import  {
     decrementProductQty,
     incrementProductQty,
     removeProduct,
     setCartItemByDispatch,
     setClearCart,
-} from '../../redux/slices/cart'
+    cart
+} from "@/redux/slices/cart"
 import AuthModal from '../auth'
 import { useQuery } from 'react-query'
-import { RestaurantsApi } from '../../hooks/react-query/config/restaurantApi'
+import { RestaurantsApi } from "@/hooks/react-query/config/restaurantApi"
 import {
     CustomColouredTypography,
     CustomTypographyBold,
-} from '../../styled-components/CustomStyles.style'
+} from "@/styled-components/CustomStyles.style"
 import { useTranslation } from 'react-i18next'
 import { ImageSource } from '../../utils/ImageSource'
-import { setCouponInfo } from '../../redux/slices/global'
+import { setCouponInfo } from "@/redux/slices/global"
 import SimpleBar from 'simplebar-react'
 import CustomModal from '../custom-modal/CustomModal'
 import ProductUpdateModal from '../food-card/ProductUpdateModal'
@@ -67,12 +61,11 @@ import GuestCheckoutModal from "./GuestCheckoutModal";
 import { onErrorResponse } from "../ErrorResponse";
 import { getGuestId } from "../checkout-page/functions/getGuestUserId";
 import useDeleteAllCartItem from "../../hooks/react-query/add-cart/useDeleteAllCartItem";
-import useDeleteCartItem from "../../hooks/react-query/add-cart/useDeleteCartItem";
-import useCartItemUpdate from "../../hooks/react-query/add-cart/useCartItemUpdate";
 import { getItemDataForAddToCart } from "./helperFunction";
-import { getSelectedAddons } from "../navbar/second-navbar/SecondNavbar";
+import { getSelectedAddons, getSelectedVariations } from "../navbar/second-navbar/SecondNavbar";
 import CircularLoader from "../loader/CircularLoader";
 import CartContent from "./CartContent";
+import useGetAllCartList from "@/hooks/react-query/add-cart/useGetAllCartList";
 
 const FloatingCart = (props) => {
     const { sideDrawerOpen, setSideDrawerOpen } = props
@@ -138,17 +131,14 @@ const FloatingCart = (props) => {
             setDrawerOpen(false);
             setSideDrawerOpen(false);
         };
-
         if (token) {
             router.push('/checkout?page=cart');
             closeDrawers();
         } else {
             const shouldOpenGuestModal = global?.guest_checkout_status === 1;
-
             if (shouldOpenGuestModal) {
                 setOpenGuestModal(true);
             } else {
-
                 handleOpenAuthModal();
             }
 
@@ -179,13 +169,42 @@ const FloatingCart = (props) => {
         setOpenModal(true)
         setSideDrawerOpen(false)
     }
+    const cartListSuccessHandler=(res)=>{
+        if(res){
+            const setItemIntoCart = () => {
+                return res?.map((item) => ({
+                    ...item?.item,
+                    cartItemId: item?.id,
+                    totalPrice:
+                        getConvertDiscount(
+                            item?.item?.discount,
+                            item?.item?.discount_type,
+                            handleProductValueWithOutDiscount(item?.item),
+                            item?.item?.restaurant_discount
+                        )
+                        *
+                        item?.quantity
+                    ,
+                    selectedAddons:getSelectedAddons(item?.item?.addons) ,
+                    quantity: item?.quantity,
+                    variations: item?.item?.variations,
+                    itemBasePrice: getConvertDiscount(
+                        item?.item?.discount,
+                        item?.item?.discount_type,
+                        calculateItemBasePrice(item?.item, item?.item?.variations),
+                        item?.item?.restaurant_discount
+                    ),
+                    selectedOptions:getSelectedVariations(item?.item?.variations)
+                }));
+            };
+            dispatch(cart(setItemIntoCart()));
+        }
+    }
 
-
-
-
-
-
-
+    const {
+        data:cartData,
+        refetch: cartListRefetch,
+    } = useGetAllCartList(getGuestId(),cartListSuccessHandler);
     return (
         <>
             {authModalOpen && (
@@ -194,6 +213,7 @@ const FloatingCart = (props) => {
                     handleClose={handleCloseAuthModal}
                     modalFor={modalFor}
                     setModalFor={setModalFor}
+                    cartListRefetch={cartListRefetch}
                 />
             )}
             {!sideDrawerOpen && (
@@ -205,7 +225,7 @@ const FloatingCart = (props) => {
                         height: '90px',
                         left: languageDirection === 'rtl' ? 10 : 'auto',
                         right: languageDirection === 'rtl' ? 'auto' : 10,
-                        top: '40%',
+                        top: '38%',
                         /* margin-left: -300px; */
                         zIndex: 1000000,
                         flexGrow: 1,
@@ -216,8 +236,8 @@ const FloatingCart = (props) => {
                             md: isFilterDrawerOpen
                                 ? 'none'
                                 : cartList?.length === 0
-                                ? 'none'
-                                : 'inherit',
+                                    ? 'none'
+                                    : 'inherit',
                         },
                     }}
                     onClick={() => setSideDrawerOpen(true)}
@@ -288,12 +308,20 @@ const FloatingCart = (props) => {
                     open={sideDrawerOpen}
                     onClose={() => setSideDrawerOpen(false)}
                     variant="temporary"
-                    sx={{ zIndex: '1400' }}
+                    sx={{ zIndex: '1400' ,
+                        '& .MuiDrawer-paper': {
+                            width:{
+                                xs:"90%",
+                                sm:"50%",
+                                md:"390px"
+
+                            }
+                        },
+                    }}
                 >
                     {cartList?.length === 0 ? (
                         <Stack
                             sx={{
-                                width: '330px',
                                 height: '100%',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -312,7 +340,6 @@ const FloatingCart = (props) => {
                     ) : (
                         <>
                             <Stack
-                                width="330px"
                                 height="100%"
                                 p="1rem"
                                 justifyContent="start"
@@ -396,21 +423,22 @@ const FloatingCart = (props) => {
                                 <Stack alignItems="center" spacing={2} position="sticky" marginTop="auto">
                                     <Stack
                                         borderRadius="5px"
+                                        flexDirection="row"
                                         sx={{
 
                                             width: '100%',
                                             paddingTop: '10px',
                                             paddingBottom: '10px',
                                         }}
-                                        backgroundColor={alpha(
-                                            theme.palette.primary.main,
-                                            0.3
-                                        )}
-                                        justifyContent="center"
+                                        // backgroundColor={alpha(
+                                        //     theme.palette.primary.main,
+                                        //     0.3
+                                        // )}
+                                        justifyContent="space-between"
                                         alignItems="center"
 
                                     >
-                                        <CustomColouredTypography
+                                        {/* <CustomColouredTypography
                                             sx={{
                                                 color: (theme) =>
                                                     theme.palette.neutral[1000],
@@ -423,14 +451,23 @@ const FloatingCart = (props) => {
                                                 currencySymbol,
                                                 digitAfterDecimalPoint
                                             )}
-                                        </CustomColouredTypography>
+                                        </CustomColouredTypography> */}
+                                        <Typography fontSize="14px" fontWeight={500}>{t('Total Price')}</Typography>
+                                        <Typography fontSize="15px" fontWeight={700}>{
+                                            getAmount(
+                                                cartItemsTotalAmount(cartList),
+                                                currencySymbolDirection,
+                                                currencySymbol,
+                                                digitAfterDecimalPoint
+                                            )}
+                                        </Typography>
                                     </Stack>
                                     <Stack
                                         direction="row"
                                         width="100%"
                                         spacing={1}
                                     >
-                                        <PrimaryButton
+                                        {/* <PrimaryButton
                                             backgroundColor={
                                                 theme.palette.neutral[200]
                                             }
@@ -446,7 +483,7 @@ const FloatingCart = (props) => {
                                             }}
                                         >
                                             {t('Clear All')}
-                                        </PrimaryButton>
+                                        </PrimaryButton> */}
                                         <PrimaryButton
                                             onClick={handleCheckout}
                                             variant="contained"
@@ -454,7 +491,7 @@ const FloatingCart = (props) => {
                                             fullWidth
                                             borderRadius="7px"
                                         >
-                                            {t('Checkout')}
+                                            {t('Proceed To Checkout')}
                                         </PrimaryButton>
                                     </Stack>
                                 </Stack>

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Paper} from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import CustomTimePicker from "../../time-picker/CustomTimePicker";
 import {DeliveryCaption} from "../CheckOut.style";
 import {useTranslation} from "react-i18next";
@@ -15,25 +15,24 @@ const TimeChooser = props => {
         setSelectedTime(time)
     }
     return (
-        <Paper sx={{width: {xs: '300px', sm: '350px'}, padding: '1rem'}}>
-            <CustomStackFullWidth alignItems='center' justifyContent='center' spacing={2}>
-                <AddCircleOutlineOutlinedIcon sx={{color: theme => theme.palette.primary.main, fontSize: '60px'}}/>
-                <DeliveryCaption id="demo-row-radio-buttons-group-label" no_margin_top='true'>
-                    {t('Add a delivery time')}
-                </DeliveryCaption>
-                <CustomTimePicker handleTimeSelect={handleTimeSelect}/>
-                <CustomStackFullWidth direction='row' alignItems='center' spacing={2}>
-                    <CustomButtonCancel onClick={() => handleModalClose()}>
-                        {t('Cancel')}
-                    </CustomButtonCancel>
-                    <CustomButtonPrimary onClick={() => handleSuccess(selectedTime)}
-                                         >
-                        {t('Add')}
-                    </CustomButtonPrimary>
-                </CustomStackFullWidth>
 
+        <CustomStackFullWidth alignItems='center' justifyContent='center' spacing={2} padding="1rem">
+            <AddCircleOutlineOutlinedIcon sx={{color: theme => theme.palette.primary.main, fontSize: '60px'}}/>
+            <DeliveryCaption id="demo-row-radio-buttons-group-label" no_margin_top='true'>
+                {t('Add a delivery time')}
+            </DeliveryCaption>
+            <CustomTimePicker handleTimeSelect={handleTimeSelect}/>
+            <CustomStackFullWidth direction='row' alignItems='center' spacing={2} justifyContent="center">
+                <CustomButtonCancel onClick={() => handleModalClose()}>
+                    {t('Cancel')}
+                </CustomButtonCancel>
+                <Button sx={{minWidth:"150px"}} variant="contained" onClick={() => handleSuccess(selectedTime)}>
+                    {t('Add')}
+                </Button>
             </CustomStackFullWidth>
-        </Paper>
+
+        </CustomStackFullWidth>
+
     );
 };
 

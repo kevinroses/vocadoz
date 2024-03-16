@@ -1,75 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Box, Grid, TextField } from "@mui/material";
-import { MobileDateRangePicker } from '@mui/x-date-pickers-pro/MobileDateRangePicker';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
+import { addDays, subDays } from "date-fns";
 import moment from "moment";
+import { RTL } from "../RTL/RTL";
+const Calendar = ({ handleValue, minDate, maxDate, diffStartEnd }) => {
 
+    const today = new Date();
+    const [state, setState] = useState([
+        {
+            startDate: moment(minDate).toDate(),
+            endDate: moment(maxDate).toDate(),
+            key: "selection"
+        }
+    ]);
 
-const CustomMobileDateRangePicker = props => {
-    const { handleValue, minDate, maxDate, diffStartEnd } = props
-    const [value, setValue] = useState([null, null]);
+    const handleOnChange = (ranges) => {
+        const { selection } = ranges;
+        setState([selection]);
+    };
     useEffect(() => {
-        if (value[0] !== null && value[1] !== null) {
-            handleValue?.(value)
+        if (state[0]?.startDate && state[0]?.endDate) {
+            const startDate = moment(state[0]?.startDate);
+            const endDate = moment(state[0]?.endDate);
+            if (!startDate.isSame(endDate)) {
+                handleValue?.(state);
+            }
         }
+    }, [state]);
 
-    }, [value])
-    const handleDateComponent = () => {
-        if (minDate && maxDate) {
-            return <MobileDateRangePicker
-                value={value}
-                minDate={moment(minDate).toDate()}
-                maxDate={moment(maxDate).toDate()}
-                onChange={(newValue) => {
-                    if (diffStartEnd) {
-                        if (value[0] !== value[1]) {
-                            setValue(newValue);
-                        }
-                    }
-                    else {
-                        setValue(newValue);
-                    }
-
-                }}
-                renderInput={(startProps, endProps) => (
-                    <Grid container spacing={3}>
-                        <Grid item xs={6}><TextField fullWidth {...startProps} /></Grid>
-                        <Grid item xs={6}> <TextField fullWidth {...endProps} /></Grid>
-                    </Grid>
-                )}
-            />
-        }
-        else {
-            return <MobileDateRangePicker
-                disablePast
-                value={value}
-                onChange={(newValue) => {
-                    setValue(newValue);
-                }}
-                renderInput={(startProps, endProps) => (
-                    <Grid container spacing={3}>
-                        <Grid item xs={6}><TextField fullWidth {...startProps} /></Grid>
-                        <Grid item xs={6}> <TextField fullWidth {...endProps} /></Grid>
-                    </Grid>
-                )}
-            />
-        }
-
-    }
     return (
-        <div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                {handleDateComponent()}
-            </LocalizationProvider>
+        <RTL direction={'ltr'}>
+            {minDate && maxDate ? (
+                <DateRangePicker
+                    onChange={handleOnChange}
+                    showSelectionPreview={false}
+                    moveRangeOnFirstSelection={false}
+                    months={1}
+                    ranges={state}
+                    direction="horizontal"
+                    minDate={moment(minDate).toDate()}
+                    maxDate={moment(maxDate).toDate()}
+                />
+            ) : (<DateRangePicker
+                onChange={handleOnChange}
+                showSelectionPreview={false}
+                moveRangeOnFirstSelection={false}
+                months={1}
+                ranges={state}
+                direction="horizontal"
+                minDate={today}
+            />)}
+        </RTL>
 
-        </div>
     );
 };
 
-CustomMobileDateRangePicker.propTypes = {
-
+Calendar.propTypes = {
+    onChange: PropTypes.func,
+    minDate: PropTypes.instanceOf(Date),
+    maxDate: PropTypes.instanceOf(Date)
 };
 
-export default CustomMobileDateRangePicker;
+export default Calendar;

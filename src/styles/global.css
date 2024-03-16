@@ -863,8 +863,9 @@ img {
     top: 5px;
     border: none;
     border-radius: 50%;
+    /*max-width: 1rem;*/
     /*width: 2rem;*/
-    /*height: 2rem;*/
+    height: 1rem;
     background: rgba(255, 255, 255, 0.7);
     z-index: 9999;
 }
@@ -1705,47 +1706,10 @@ h5 {
     left: 6px !important;
 
 }
-
-.google-pay-button {
-    width: 100%;
+.rdrDefinedRangesWrapper {
+    display: none !important;
 }
 
-.google-pay-button.disabled button {
-    background-color: #3c4043;
-    cursor: unset;
-}
-
-span#applepay_icon {
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-synthesis: none;
-    justify-content: center;
-    position: relative;
-    margin: 0;
-    box-sizing: var(--apple-pay-button-box-sizing, content-box);
-    min-height: 30px;
-    height: calc(30px);
-    min-width: 140px;
-    width: 100%;
-    border-radius: 5px;
-    -moz-font-feature-settings: kern;
-    -moz-osx-font-smoothing: 'grayscale';
-    -webkit-font-smoothing: antialiased;
-}
-
-span#applepay_icon>svg {
-    max-width: 100%;
-    min-height: 24px;
-    min-width: 50%;
-    height: 100%;
-    transform: translateZ(0) scale(1.0, 1.0);
-}
-
-#svg-text.hidden,
-#svg-logo.hidden {
-    display: none;
-}
 @keyframes fadeInRight {
     0% {
         opacity: 0;
@@ -1754,5 +1718,14 @@ span#applepay_icon>svg {
     100% {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@keyframes bgPosition {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
     }
 }

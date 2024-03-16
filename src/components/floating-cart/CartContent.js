@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, IconButton, Stack, Typography } from "@mui/material";
 import CustomImageContainer from "../CustomImageContainer";
-import { ImageSource } from "../../utils/ImageSource";
+import { ImageSource } from "@/utils/ImageSource";
 import { OrderFoodAmount, OrderFoodName, OrderFoodSubtitle } from "../checkout-page/CheckOut.style";
 import VisibleVariations from "./VisibleVariations";
 import {
@@ -10,13 +10,13 @@ import {
   getConvertDiscount,
   getSelectedAddOn, getTotalVariationsPrice, handleIncrementedTotal, handleProductValueWithOutDiscount,
   handleTotalAmountWithAddonsFF
-} from "../../utils/customFunctions";
+} from "@/utils/customFunctions";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CircularLoader from "../loader/CircularLoader";
 import AddIcon from "@mui/icons-material/Add";
 import { getSelectedAddons } from "../navbar/second-navbar/SecondNavbar";
-import { decrementProductQty, incrementProductQty, removeProduct } from "../../redux/slices/cart";
+import { decrementProductQty, incrementProductQty, removeProduct } from "@/redux/slices/cart";
 import { getItemDataForAddToCart } from "./helperFunction";
 import toast from "react-hot-toast";
 import { onErrorResponse } from "../ErrorResponse";
@@ -149,11 +149,12 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
   };
   return (
 
-      <Grid item md={12} container >
+      <Grid item md={12} xs={12} sm={12}  container >
         <Grid
           item
-          md={4}
+          md={3}
           xs={3}
+          sm={3}
           onClick={() =>
             handleProductUpdateModal(
               item
@@ -183,19 +184,21 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
           {/*    loading="lazy"*/}
           {/*/>*/}
         </Grid>
-        <Grid item md={8} xs={9} sx={{ paddingInlineStart:".7rem" }}>
+        <Grid item md={9} xs={9} sx={{ paddingInlineStart:".7rem" }}>
           <Grid
             container
             md={12}
+            sm={12}
             xs={12}
             spacing={{ xs: 1 }}
-            marginTop="10px"
+
           >
             <Grid
               item
               md={12}
+              sm={12}
               xs={12}
-              marginTop="10px"
+
             >
               <OrderFoodName
                 sx={{
@@ -250,6 +253,7 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
               item
               md={6}
               xs={6}
+              sm={6}
             >
               <OrderFoodAmount>
                 {getAmount(
@@ -266,6 +270,7 @@ const CartContent = ({item,handleProductUpdateModal,productBaseUrl,t}) => {
             <Grid
               md={6}
               xs={6}
+              sm={6}
               pt="6px"
             >
               <Stack

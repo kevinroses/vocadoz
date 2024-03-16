@@ -58,9 +58,8 @@ export const onMessageListener = async () =>
     new Promise((resolve) =>
         (async () => {
             const messagingResolve = await messaging
-            if (messagingResolve)
-                onMessage(messagingResolve, (payload) => {
-                    resolve(payload)
-                })
+            onMessage(messagingResolve, (payload) => {
+                resolve(payload)
+            })
         })()
     )

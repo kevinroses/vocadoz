@@ -20,9 +20,9 @@ const FunSectionShimmer = () => {
     return (
        <>
            <Stack direction="row" width="100%"   justifyContent="space-between" alignItems="center" paddingX="20px">
-           {[...Array(handleCount())].map((categoryItem, key) => (
+           {[...Array(handleCount())].map((categoryItem) => (
 
-                   <Stack spacing={1} justifyContent="center" alignItems="center" key={key}>
+                   <Stack spacing={1} justifyContent="center" alignItems="center">
                        <Skeleton variant="rectangular" width="121px" height="140px" animation="wave"/>
                        <Skeleton variant="text" width="90px" height="20px" animation="wave"/>
                        <Skeleton variant="text" width="200px" height="20px" animation="wave"/>
